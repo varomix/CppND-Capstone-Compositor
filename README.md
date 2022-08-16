@@ -1,17 +1,40 @@
 # CPPND: Capstone Compositor project
+
 By Varo Castaneda
 
+### GOALS
+
+* Use 2 images only
+* have common composite operations ✅
+* load custom images
+* transform controls for each layer
+* simple color correction
+
+### TODO:
+
+* fix texture repeating
+* add GUI ✅
+* layer properties
+* load texture at runtime
+* compositing operations ✅
+* make texture loading into its own function ✅
+* make gui scale with window
+* make layers widget scrollable
+* hook reset buttons on transform properties
+* hook property values to selected layer
+
 ## Dependencies for Running Locally
+
 * cmake >= 3.7
-  * All OSes: [click here for installation instructions](https://cmake.org/install/)
+    * All OSes: [click here for installation instructions](https://cmake.org/install/)
 * make >= 4.1 (Linux, Mac), 3.81 (Windows)
-  * Linux: make is installed by default on most Linux distros
-  * Mac: [install Xcode command line tools to get make](https://developer.apple.com/xcode/features/)
-  * Windows: [Click here for installation instructions](http://gnuwin32.sourceforge.net/packages/make.htm)
+    * Linux: make is installed by default on most Linux distros
+    * Mac: [install Xcode command line tools to get make](https://developer.apple.com/xcode/features/)
+    * Windows: [Click here for installation instructions](http://gnuwin32.sourceforge.net/packages/make.htm)
 * gcc/g++ >= 5.4
-  * Linux: gcc / g++ is installed by default on most Linux distros
-  * Mac: same deal as make - [install Xcode command line tools](https://developer.apple.com/xcode/features/)
-  * Windows: recommend using [MinGW](http://www.mingw.org/)
+    * Linux: gcc / g++ is installed by default on most Linux distros
+    * Mac: same deal as make - [install Xcode command line tools](https://developer.apple.com/xcode/features/)
+    * Windows: recommend using [MinGW](http://www.mingw.org/)
 
 ## Basic Build Instructions
 
