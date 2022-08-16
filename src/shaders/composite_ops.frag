@@ -20,8 +20,10 @@ void main() {
     // Image Compositing Operations
     // OVER
     if (operation == 0) {
-        vec4 over = front + ((1-front.a) * back);
-        FragColor = vec4(over);
+        //        vec4 over = front + ((1-front.a) * back);
+        vec3 color = (front.a * front.rgb) + (1 - front.a) * (back.a * back.rgb);
+        float alpha = (1 - front.a) * back.a;
+        FragColor = vec4(color, alpha);
     }
     // ADD
     else if (operation == 1) {

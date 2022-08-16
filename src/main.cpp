@@ -13,12 +13,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <stdio.h>
-#include <ImGuiFileBrowser.h>
 
 #include "api/mix_camera.h"
 
-const unsigned int WIDTH = 1280;
-const unsigned int HEIGHT = 720;
+const unsigned int WIDTH = 1080;
+const unsigned int HEIGHT = 1080;
 
 // camera
 Camera camera(glm::vec3(0.0f, 0.0f, 1.0f));
@@ -140,16 +139,15 @@ int main(int, char **) {
     Shader comp_shader("../src/shaders/composite_ops.vert",
                        "../src/shaders/composite_ops.frag");
 
-    // load and create a texture
-//    unsigned int texture_back_01 = load_texture("../images/sky_01.jpg");
+
 
     // load textures to shader uniforms
-    buffer_shader.use();
-    buffer_shader.set_int("texture1", 0);
+//    buffer_shader.use();
+//    buffer_shader.set_int("texture1", 0);
 
-    comp_shader.use();
-    comp_shader.set_int("back_layer", 0);
-    comp_shader.set_int("front_layer", 1);
+//    comp_shader.use();
+//    comp_shader.set_int("back_layer", 0);
+//    comp_shader.set_int("front_layer", 1);
 
     // framebuffers
     unsigned int comp_buffer;
@@ -181,18 +179,6 @@ int main(int, char **) {
         std::cerr << "ERROR::FRAMEBUFFER:: COMP Framebuffer is not complete!\n";
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    unsigned int layer01_buffer;
-    glGenFramebuffers(1, &layer01_buffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, layer01_buffer);
-    // color attachment for final comp buffer
-    unsigned int layer01_color_buffer;
-    glGenTextures(1, &layer01_color_buffer);
-    glBindTexture(GL_TEXTURE_2D, layer01_color_buffer);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, WIDTH, HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, layer01_color_buffer, 0);
-
     // back frame buffer
     unsigned int back_buffer;
     glGenFramebuffers(1, &back_buffer);
@@ -210,11 +196,16 @@ int main(int, char **) {
     glGenFramebuffers(1, &front_buffer);
     glBindFramebuffer(GL_FRAMEBUFFER, front_buffer);
     // attach the texture
-    unsigned int texture_front = load_texture("../images/engel.png");
+    unsigned int texture_front = load_texture("../images/moon.png");
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture_front, 0);
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         std::cerr << "ERROR::FRAMEBUFFER:: FRONT Framebuffer is not complete!\n";
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    // load and create a texture
+    unsigned int texture_back_02 = load_texture("../images/sky_01.jpg");
+    unsigned int texture_front_02 = load_texture("../images/engel.png");
+    unsigned int texture_front_03 = load_texture("../images/pin-up.png");
 
     // TRANSFORM LAYER SETTINGS
     // back layer
@@ -257,8 +248,6 @@ int main(int, char **) {
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
 
-    imgui_addons::ImGuiFileBrowser file_dialog;
-
     //     When viewports are enabled we tweak WindowRounding/WindowBg so platform
     //     windows can look identical to regular ones.
     ImGuiStyle &style = ImGui::GetStyle();
@@ -280,6 +269,8 @@ int main(int, char **) {
     bool show_demo_window = false;
     bool show_another_window = false;
     int current_op = 0;
+    int front_current_index = 0;
+    int back_current_index = 0;
     ImVec4 clear_color = ImVec4(0.18f, 0.18f, 0.18f, 1.00f);
 
     float xpos{0};
@@ -300,9 +291,19 @@ int main(int, char **) {
             ImGui::Begin("Properties"); // Create a window called "Hello, world!"
             // and append into it.
 
-            ImGui::SliderFloat3("Position", &back_transform.x, -2.0f, 2.0f);
-            ImGui::SliderFloat("Rotation", &back_rotation, 0, 360);
-            ImGui::SliderFloat("front Rotation", &front_rotation, 0, 360);
+//            ImGui::SliderFloat3("Position", &back_transform.x, -2.0f, 2.0f);
+//            ImGui::SliderFloat("Rotation", &back_rotation, 0, 360);
+//            ImGui::SliderFloat("front Rotation", &front_rotation, 0, 360);
+
+            {
+                const char *front_items[] = {"Moon", "Engel", "Pin Up"};
+                ImGui::Combo("Front Image", &front_current_index, front_items, IM_ARRAYSIZE(front_items));
+            }
+
+            {
+                const char *back_items[] = {"Blue Sky", "Red Sky"};
+                ImGui::Combo("Background Image", &back_current_index, back_items, IM_ARRAYSIZE(back_items));
+            }
 
             {
                 const char *items[] =
@@ -333,16 +334,17 @@ int main(int, char **) {
         model = glm::translate(model, back_transform);
         model = glm::scale(model, glm::vec3(0.5, 0.5, 0.5));
 //        buffer_shader.set_mat4("model", model);
+
+
         glBindVertexArray(quadVAO);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0);
 
         // draw front
         glBindFramebuffer(GL_FRAMEBUFFER, front_buffer);
-//        glDisable(GL_DEPTH_TEST);
-        glEnable(GL_DEPTH_TEST);
+        glDisable(GL_DEPTH_TEST);
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT);
 
         buffer_shader.use();
         model = glm::translate(model, front_transform);
@@ -367,11 +369,20 @@ int main(int, char **) {
         // pass buffers to comp shader
         comp_shader.set_int("back_layer", 0);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, back_buffer);
+        if (back_current_index == 0)
+            glBindTexture(GL_TEXTURE_2D, back_buffer);
+        else if (back_current_index == 1)
+            glBindTexture(GL_TEXTURE_2D, texture_back_02);
 
         comp_shader.set_int("front_layer", 1);
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, front_buffer);
+
+        if (front_current_index == 0)
+            glBindTexture(GL_TEXTURE_2D, front_buffer);
+        else if (front_current_index == 1)
+            glBindTexture(GL_TEXTURE_2D, texture_front_02);
+        else if (front_current_index == 2)
+            glBindTexture(GL_TEXTURE_2D, texture_front_03);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
         ImGui::Render();
