@@ -29,7 +29,8 @@ By Varo Castaneda
 
 ## Basic Build Instructions
 
-1. Clone this repo.
+1. Clone this repo using recursive to get
+   submodules. `git clone --recursive https://github.com/varomix/CppND-Capstone-Compositor.git`
 2. Make a build directory in the top level directory: `mkdir build && cd build`
 3. Compile: `cmake .. && make`
 4. Run it: `./CPPNG_CompositorPrototype`.
