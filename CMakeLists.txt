@@ -31,11 +31,10 @@ add_library(imgui STATIC
         )
 
 include_directories(${CMAKE_SOURCE_DIR}/src/vendor/glad/include)
-include_directories(${CMAKE_SOURCE_DIR}/src/vendor/FileBrowser)
 include_directories(${CMAKE_SOURCE_DIR}/src/vendor/stb)
 
 include_directories(${INCLUDE_FOLDER} ${imgui_Includes}) # Include folders
-add_executable(${PROJECT_NAME} src/vendor/glad/src/glad.c src/shader.h src/gui.h src/main.cpp src/utils.h)
-target_link_libraries(${PROJECT_NAME} glut GL GLU glfw GLEW imgui)
+add_executable(${PROJECT_NAME} src/vendor/glad/src/glad.c src/shader.h src/gui.h src/main.cpp src/vendor/stb/stb_image.h src/utils.h)
+target_link_libraries(${PROJECT_NAME} glut GL GLU glfw GLEW imgui dl)
 
 

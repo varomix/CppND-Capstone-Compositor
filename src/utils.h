@@ -6,7 +6,7 @@
 #define CPPNG_MIXTUREPROTOTYPE_SRC_UTILS_H_
 #include <GL/glew.h>
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb/stb_image.h>
+#include <stb_image.h>
 #include <iostream>
 
 unsigned int load_texture(const char *img_path) {
